@@ -71,7 +71,7 @@ static void *
 tied_make_entry(Dwarf_Sig8 *key, Dwarf_CU_Context val)
 {
     struct Dwarf_Tied_Entry_s *e = 0;
-    e = calloc(1,sizeof(struct Dwarf_Tied_Entry_s));
+    e = dwarf_calloc(1,sizeof(struct Dwarf_Tied_Entry_s));
     if(e) {
         e->dt_key =    *key;
         e->dt_context = val;
@@ -119,7 +119,7 @@ void
 _dwarf_tied_destroy_free_node(void*nodep)
 {
     struct Dwarf_Tied_Entry_s * enp = nodep;
-    free(enp);
+    dwarf_free(enp);
     return;
 }
 

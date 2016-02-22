@@ -877,7 +877,7 @@ dwarf_register_printf_callback( Dwarf_Debug dbg,
         }else {
             /*  Switch from our control of buffer to user
                 control.  */
-            free(oldval.dp_buffer);
+            dwarf_free(oldval.dp_buffer);
             oldval.dp_buffer = 0;
             dbg->de_printf_callback = *newvalues;
         }
@@ -913,12 +913,12 @@ static void bufferdoublesize(struct  Dwarf_Printf_Callback_Info_s *bufdata)
         }
     }
     /* Make big enough for a trailing NUL char. */
-    space = (char *)malloc(targlen+1);
+    space = (char *)dwarf_malloc(targlen+1);
     if (!space) {
         /* Out of space, we cannot double it. */
         return;
     }
-    free(bufdata->dp_buffer);
+    dwarf_free(bufdata->dp_buffer);
     bufdata->dp_buffer = space;
     bufdata->dp_buffer_len = targlen;
     return;

@@ -591,7 +591,7 @@ get_relocation_entries(Dwarf_Bool is_64bit,
         }
         *nrelas = relocation_section_size/relocation_size;
         bytescount = (*nrelas) * sizeof(struct Dwarf_Elf_Rela);
-        *relas = malloc(bytescount);
+        *relas = dwarf_malloc(bytescount);
         if (!*relas) {
             *error = DW_DLE_MAF;
             return(DW_DLV_ERROR);
@@ -1089,7 +1089,7 @@ loop_through_relocations(
         relocation_section_entrysize,
         &relas, &nrelas, error);
     if (ret != DW_DLV_OK) {
-        free(relas);
+        dwarf_free(relas);
         return ret;
     }
 
@@ -1098,7 +1098,7 @@ loop_through_relocations(
             So the only safe thing is to copy the current data into
             malloc space and refer to the malloc space instead of the
             space returned by the elf library */
-        mspace = malloc(relocatablesec->dss_size);
+        mspace = dwarf_malloc(relocatablesec->dss_size);
         if (!mspace) {
             *error = DW_DLE_RELOC_SECTION_MALLOC_FAIL;
             return DW_DLV_ERROR;
@@ -1119,7 +1119,7 @@ loop_through_relocations(
         symtab_section_size,
         symtab_section_entrysize,
         relas, nrelas, error);
-    free(relas);
+    dwarf_free(relas);
     return ret;
 }
 
@@ -1280,7 +1280,7 @@ dwarf_elf_object_access_init(dwarf_elf_handle elf,
     dwarf_elf_object_access_internals_t *internals = 0;
     Dwarf_Obj_Access_Interface *intfc = 0;
 
-    internals = malloc(sizeof(dwarf_elf_object_access_internals_t));
+    internals = dwarf_malloc(sizeof(dwarf_elf_object_access_internals_t));
     if (!internals) {
         *err = DW_DLE_ALLOC_FAIL;
         /* Impossible case, we hope. Give up. */
@@ -1290,16 +1290,16 @@ dwarf_elf_object_access_init(dwarf_elf_handle elf,
     res = dwarf_elf_object_access_internals_init(internals, elf, err);
     if (res != DW_DLV_OK){
         /* *err is already set. */
-        free(internals);
+        dwarf_free(internals);
         return DW_DLV_ERROR;
     }
     internals->libdwarf_owns_elf = libdwarf_owns_elf;
 
-    intfc = malloc(sizeof(Dwarf_Obj_Access_Interface));
+    intfc = dwarf_malloc(sizeof(Dwarf_Obj_Access_Interface));
     if (!intfc) {
         /* Impossible case, we hope. Give up. */
         *err = DW_DLE_ALLOC_FAIL;
-        free(internals);
+        dwarf_free(internals);
         return DW_DLV_ERROR;
     }
     /* Initialize the interface struct */
@@ -1326,8 +1326,8 @@ dwarf_elf_object_access_finish(Dwarf_Obj_Access_Interface* obj)
             elf_end(internals->elf);
         }
     }
-    free(obj->object);
-    free(obj);
+    dwarf_free(obj->object);
+    dwarf_free(obj);
 }
 
 /*  This function returns the Elf * pointer

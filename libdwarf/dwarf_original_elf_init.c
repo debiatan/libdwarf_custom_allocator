@@ -63,6 +63,9 @@ dwarf_elf_init_file_ownership(dwarf_elf_handle elf_file_pointer,
     Dwarf_Debug * ret_dbg,
     Dwarf_Error * error);
 
+MallocFunction *dwarf_malloc;
+CallocFunction *dwarf_calloc;
+FreeFunction *dwarf_free;
 
 /*  The basic dwarf initializer function for consumers using
     libelf.
@@ -72,12 +75,19 @@ int
 dwarf_init(int fd,
     Dwarf_Unsigned access,
     Dwarf_Handler errhand,
-    Dwarf_Ptr errarg, Dwarf_Debug * ret_dbg, Dwarf_Error * error)
+    Dwarf_Ptr errarg, Dwarf_Debug * ret_dbg, Dwarf_Error * error,
+    MallocFunction *malloc_function, 
+    CallocFunction *calloc_function, 
+    FreeFunction *free_function)
 {
     struct stat fstat_buf;
     dwarf_elf_handle elf_file_pointer = 0;
     /* ELF_C_READ is a portable value */
     Elf_Cmd what_kind_of_elf_read = ELF_C_READ;
+
+    dwarf_malloc = malloc_function;
+    dwarf_calloc = calloc_function;
+    dwarf_free = free_function;
 
 #if !defined(S_ISREG)
 #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)

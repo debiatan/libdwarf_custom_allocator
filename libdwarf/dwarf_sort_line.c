@@ -138,7 +138,7 @@ dwarf_ld_sort_lines(void *orig_buffer,
         length_size = 8;
 
     *any_change = 0;
-    line_ptr = malloc(buffer_len);
+    line_ptr = dwarf_malloc(buffer_len);
     if (!line_ptr) {
         *err_code = DW_DLE_ALLOC_FAIL;
         return DW_DLV_ERROR;
@@ -171,7 +171,7 @@ dwarf_ld_sort_lines(void *orig_buffer,
         break;
     }
     if (sec_res == DW_DLV_ERROR) {
-        free(orig_line_ptr);
+        dwarf_free(orig_line_ptr);
         return sec_res;
     }
 
@@ -183,7 +183,7 @@ dwarf_ld_sort_lines(void *orig_buffer,
         memcpy(orig_buffer, orig_line_ptr, buffer_len);
         *any_change = 1;
     }
-    free(orig_line_ptr);
+    dwarf_free(orig_line_ptr);
 
     return sec_res;
 }
@@ -221,7 +221,7 @@ free_area_data(struct a_line_area *arp)
 {
     while (arp) {
         struct a_line_area *next = arp->ala_next;
-        free(arp);
+        dwarf_free(arp);
         arp = next;
     }
 }
@@ -546,7 +546,7 @@ _dwarf_update_line_sec(Dwarf_Small * line_ptr,
                 }
                 last_address = address;
 
-                area = malloc(sizeof(struct a_line_area));
+                area = dwarf_malloc(sizeof(struct a_line_area));
                 area->ala_address = address;
                 area->ala_offset = stmt_prog_entry_start -
                     orig_line_ptr;
@@ -610,7 +610,7 @@ _dwarf_update_line_sec(Dwarf_Small * line_ptr,
         Dwarf_Small *new_area;
         long i;
 
-        ala_array = malloc(area_count * sizeof(struct a_line_area));
+        ala_array = dwarf_malloc(area_count * sizeof(struct a_line_area));
         if (!ala_array) {
             dwarf_free_line_table_prefix(&prefix);
             *err_code = DW_DLE_ALLOC_FAIL;
@@ -635,9 +635,9 @@ _dwarf_update_line_sec(Dwarf_Small * line_ptr,
         start_len =
             (prefix.pf_line_prologue_start +
             prefix.pf_prologue_length) - orig_line_ptr;
-        new_area = malloc(remaining_bytes);
+        new_area = dwarf_malloc(remaining_bytes);
         if (!new_area) {
-            free(ala_array);
+            dwarf_free(ala_array);
             *err_code = DW_DLE_ALLOC_FAIL;
             dwarf_free_line_table_prefix(&prefix);
             return DW_DLV_ERROR;
@@ -652,8 +652,8 @@ _dwarf_update_line_sec(Dwarf_Small * line_ptr,
 
         memcpy(orig_line_ptr, new_area, remaining_bytes);
 
-        free(new_area);
-        free(ala_array);
+        dwarf_free(new_area);
+        dwarf_free(ala_array);
         ala_array = 0;
         new_area = 0;
     }

@@ -196,7 +196,7 @@ _dwarf_exec_frame_instr(Dwarf_Bool make_instr,
         }                                                    \
     } /*CONSTCOND */ while (0)
 #define SIMPLE_ERROR_RETURN(code) \
-        free(localregtab);        \
+        dwarf_free(localregtab);        \
         *returned_error = code;   \
         return DW_DLV_ERROR
 
@@ -218,7 +218,7 @@ _dwarf_exec_frame_instr(Dwarf_Bool make_instr,
     Dwarf_Unsigned adv_loc = 0;
 
     unsigned reg_count = dbg->de_frame_reg_rules_entry_count;
-    struct Dwarf_Reg_Rule_s *localregtab = calloc(reg_count,
+    struct Dwarf_Reg_Rule_s *localregtab = dwarf_calloc(reg_count,
         sizeof(struct Dwarf_Reg_Rule_s));
 
     struct Dwarf_Reg_Rule_s cfa_reg;
@@ -1068,7 +1068,7 @@ _dwarf_exec_frame_instr(Dwarf_Bool make_instr,
     } else {
         *returned_count = 0;
     }
-    free(localregtab);
+    dwarf_free(localregtab);
     return DW_DLV_OK;
 #undef ERROR_IF_REG_NUM_TOO_HIGH
 #undef SIMPLE_ERROR_RETURN
@@ -2410,7 +2410,7 @@ init_reg_rules_alloc(Dwarf_Debug dbg,struct Dwarf_Frame_s *f,
 {
     f->fr_reg_count = count;
     f->fr_reg = (struct Dwarf_Reg_Rule_s *)
-        calloc(sizeof(struct Dwarf_Reg_Rule_s), count);
+        dwarf_calloc(sizeof(struct Dwarf_Reg_Rule_s), count);
     if (f->fr_reg == 0) {
         if (error) {
             _dwarf_error(dbg, error, DW_DLE_DF_ALLOC_FAIL);
@@ -2437,7 +2437,7 @@ dwarf_initialize_fde_table(Dwarf_Debug dbg,
 static void
 dwarf_free_fde_table(struct Dwarf_Frame_s *fde_table)
 {
-    free(fde_table->fr_reg);
+    dwarf_free(fde_table->fr_reg);
     fde_table->fr_reg_count = 0;
     fde_table->fr_reg = 0;
 }

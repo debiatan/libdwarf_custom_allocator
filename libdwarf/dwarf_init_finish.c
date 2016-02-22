@@ -596,7 +596,7 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
 
     /*  Allocate space to record references to debug sections, that can
         be referenced by RELA sections in the 'sh_info' field. */
-    sections = (struct Dwarf_Section_s **)calloc(section_count + 1,
+    sections = (struct Dwarf_Section_s **)dwarf_calloc(section_count + 1,
         sizeof(struct Dwarf_Section_s *));
     if (!sections) {
         /* Impossible case, we hope. Give up. */
@@ -628,10 +628,10 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
             obj_section_index,
             &doas, &err);
         if (res == DW_DLV_NO_ENTRY){
-            free(sections);
+            dwarf_free(sections);
             return res;
         } else if (res == DW_DLV_ERROR){
-            free(sections);
+            dwarf_free(sections);
             DWARF_DBG_ERROR(dbg, err, DW_DLV_ERROR);
         }
 
@@ -653,11 +653,11 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
                 &err);
             if (res == DW_DLV_OK) {
                 /* DUPLICATE */
-                free(sections);
+                dwarf_free(sections);
                 DWARF_DBG_ERROR(dbg, DW_DLE_SECTION_DUPLICATION,
                     DW_DLV_ERROR);
             } else if (res == DW_DLV_ERROR) {
-                free(sections);
+                dwarf_free(sections);
                 DWARF_DBG_ERROR(dbg, err, DW_DLV_ERROR);
             }
             /* No entry: new-to-us section, the normal case. */
@@ -680,7 +680,7 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
                         section->ds_duperr,
                         section->ds_emptyerr);
                     if (res != DW_DLV_OK) {
-                        free(sections);
+                        dwarf_free(sections);
                         return res;
                     }
                     sections[obj_section_index] = section->ds_secdata;
@@ -691,17 +691,17 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
                 }else if (res == DW_DLV_NO_ENTRY) {
                     /*  Some sort of bug in the code here.
                         Should be impossible to get here. */
-                    free(sections);
+                    dwarf_free(sections);
                     DWARF_DBG_ERROR(dbg, DW_DLE_SECTION_ERROR, DW_DLV_ERROR);
                 } else {
-                    free(sections);
+                    dwarf_free(sections);
                     DWARF_DBG_ERROR(dbg, err, DW_DLV_ERROR);
                 }
             } else if (res == DW_DLV_NO_ENTRY) {
                 /*  We get here for relocation sections.
                     Fall through. */
             } else {
-                free(sections);
+                dwarf_free(sections);
                 DWARF_DBG_ERROR(dbg, err, DW_DLV_ERROR);
             }
 
@@ -720,7 +720,7 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
                         }
                     } else {
                         /* Something is wrong with the ELF file. */
-                        free(sections);
+                        dwarf_free(sections);
                         DWARF_DBG_ERROR(dbg, DW_DLE_ELF_SECT_ERR, DW_DLV_ERROR);
                     }
                 }
@@ -730,7 +730,7 @@ _dwarf_setup(Dwarf_Debug dbg, Dwarf_Error * error)
     }
 
     /* Free table with section information. */
-    free(sections);
+    dwarf_free(sections);
     if (foundDwarf) {
         return DW_DLV_OK;
     }
@@ -964,7 +964,7 @@ do_decompress_zlib(Dwarf_Debug dbg,
         srclen -= 12;
     }
     destlen = uncompressed_len;
-    dest = malloc(destlen);
+    dest = dwarf_malloc(destlen);
     if(!dest) {
         DWARF_DBG_ERROR(dbg, DW_DLE_ALLOC_FAIL, DW_DLV_ERROR);
     }

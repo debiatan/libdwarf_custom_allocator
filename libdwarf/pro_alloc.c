@@ -73,7 +73,7 @@ _dwarf_p_get_alloc(Dwarf_P_Debug dbg, Dwarf_Unsigned size)
     memory_list_t *nextblock = NULL;
 
     /* alloc control struct and data block together for performance reasons */
-    lp = (memory_list_t *) malloc(size + sizeof(memory_list_t));
+    lp = (memory_list_t *) dwarf_malloc(size + sizeof(memory_list_t));
     if (lp == NULL) {
         /* should throw an error */
         return NULL;
@@ -144,7 +144,7 @@ _dwarf_p_dealloc(Dwarf_P_Debug dbg, Dwarf_Small * ptr) /* ARGSUSED */
   lp->prev->next = lp->next;
   lp->next->prev = lp->prev;
 
-  free((void*)lp);
+  dwarf_free((void*)lp);
 }
 
 

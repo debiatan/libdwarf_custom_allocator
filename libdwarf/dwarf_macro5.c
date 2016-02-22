@@ -303,7 +303,7 @@ _dwarf_get_macro_ops_count_internal(Dwarf_Macro_Context macro_context,
     if (build_ops_array) {
         known_ops_count = macro_context->mc_macro_ops_count;
         opsarray = (struct Dwarf_Macro_Operator_s *)
-            calloc(known_ops_count,sizeof(struct Dwarf_Macro_Operator_s));
+            dwarf_calloc(known_ops_count,sizeof(struct Dwarf_Macro_Operator_s));
         if(!opsarray) {
             _dwarf_error(dbg, error, DW_DLE_ALLOC_FAIL);
             return DW_DLV_ERROR;
@@ -682,7 +682,7 @@ construct_from_dir_and_name(const char *dir,
 
     /* Allow for NUL char and added /  */
     truelen = strlen(dir) + strlen(name) + 1 +1;
-    final = (char *)malloc(truelen);
+    final = (char *)dwarf_malloc(truelen);
     if(!final) {
         return NULL;
     }
@@ -962,7 +962,7 @@ read_operands_table(Dwarf_Macro_Context macro_context,
     macro_data = table_data_start;
     /* allocate table */
     macro_context->mc_opcode_forms =  (struct Dwarf_Macro_Forms_s *)
-        calloc(operand_table_count,
+        dwarf_calloc(operand_table_count,
             sizeof(struct Dwarf_Macro_Forms_s));
     macro_context->mc_opcode_count = operand_table_count;
     if(!macro_context->mc_opcode_forms) {
@@ -1409,11 +1409,11 @@ _dwarf_macro_destructor(void *m)
     dealloc_srcfiles(dbg, mc->mc_srcfiles, mc->mc_srcfiles_count);
     mc->mc_srcfiles = 0;
     mc->mc_srcfiles_count = 0;
-    free((void *)mc->mc_file_path);
+    dwarf_free((void *)mc->mc_file_path);
     mc->mc_file_path = 0;
-    free(mc->mc_ops);
+    dwarf_free(mc->mc_ops);
     mc->mc_ops = 0;
-    free(mc->mc_opcode_forms);
+    dwarf_free(mc->mc_opcode_forms);
     mc->mc_opcode_forms = 0;
     memset(mc,0,sizeof(*mc));
     /* Just a recognizable sentinel. For debugging.  No real meaning. */

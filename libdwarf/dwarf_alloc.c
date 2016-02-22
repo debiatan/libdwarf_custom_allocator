@@ -302,7 +302,7 @@ tdestroy_free_node(void *nodep)
     if (alloc_instance_basics[type].specialdestructor) {
         alloc_instance_basics[type].specialdestructor(m);
     }
-    free(malloc_addr);
+    dwarf_free(malloc_addr);
 }
 
 /* The sort of hash table entries result in very simple helper functions. */
@@ -368,7 +368,7 @@ _dwarf_get_alloc(Dwarf_Debug dbg,
             sizeof(Dwarf_Addr) : sizeof(Dwarf_Off));
     }
     size += DW_RESERVE;
-    alloc_mem = malloc(size);
+    alloc_mem = dwarf_malloc(size);
     if (!alloc_mem) {
         return NULL;
     }
@@ -524,7 +524,7 @@ dwarf_dealloc(Dwarf_Debug dbg,
             In any case, we simply don't worry about it.
             Not Supposed To Happen. */
 
-        free(malloc_addr);
+        dwarf_free(malloc_addr);
         return;
     }
 }
@@ -539,7 +539,7 @@ _dwarf_get_debug(void)
 {
     Dwarf_Debug dbg;
 
-    dbg = (Dwarf_Debug) malloc(sizeof(struct Dwarf_Debug_s));
+    dbg = (Dwarf_Debug) dwarf_malloc(sizeof(struct Dwarf_Debug_s));
     if (dbg == NULL) {
         return (NULL);
     }
@@ -570,7 +570,7 @@ static void
 rela_free(struct Dwarf_Section_s * sec)
 {
     if (sec->dss_data_was_malloc) {
-        free(sec->dss_data);
+        dwarf_free(sec->dss_data);
     }
     sec->dss_data = 0;
     sec->dss_data_was_malloc = 0;
@@ -654,7 +654,7 @@ _dwarf_free_all_of_one_debug(Dwarf_Debug dbg)
 
     if (dbg->de_printf_callback.dp_buffer &&
         !dbg->de_printf_callback.dp_buffer_user_provided ) {
-        free(dbg->de_printf_callback.dp_buffer);
+        dwarf_free(dbg->de_printf_callback.dp_buffer);
     }
 
     dwarf_tdestroy(dbg->de_alloc_tree,tdestroy_free_node);
@@ -665,7 +665,7 @@ _dwarf_free_all_of_one_debug(Dwarf_Debug dbg)
         dbg->de_tied_data.td_tied_search = 0;
     }
     memset(dbg, 0, sizeof(*dbg)); /* Prevent accidental use later. */
-    free(dbg);
+    dwarf_free(dbg);
     return (DW_DLV_OK);
 }
 /*  A special case: we have no dbg, no alloc header etc.
@@ -680,7 +680,7 @@ struct Dwarf_Error_s *
 _dwarf_special_no_dbg_error_malloc(void)
 {
     /* The union unused things are to guarantee proper alignment */
-    char *mem = malloc(sizeof(struct Dwarf_Error_s));
+    char *mem = dwarf_malloc(sizeof(struct Dwarf_Error_s));
     if (mem == 0) {
         return 0;
     }

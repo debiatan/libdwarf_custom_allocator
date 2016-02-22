@@ -109,7 +109,7 @@ int dwarf_get_ranges_a(Dwarf_Debug dbg,
     beginrangeptr = rangeptr;
 
     for (;;) {
-        struct ranges_entry * re = calloc(sizeof(struct ranges_entry),1);
+        struct ranges_entry * re = dwarf_calloc(sizeof(struct ranges_entry),1);
         if (!re) {
             _dwarf_error(dbg, error, DW_DLE_DEBUG_RANGES_OUT_OF_MEM);
             return (DW_DLV_ERROR);
@@ -164,7 +164,7 @@ int dwarf_get_ranges_a(Dwarf_Debug dbg,
         struct ranges_entry *r = curre;
         *ranges_data_out = curre->cur;
         curre = curre->next;
-        free(r);
+        dwarf_free(r);
     }
     /* Callers will often not care about the bytes used. */
     if (bytecount) {

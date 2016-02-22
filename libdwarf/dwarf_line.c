@@ -1539,16 +1539,16 @@ delete_line_context_itself(Dwarf_Line_Context context)
     while (fe) {
         Dwarf_File_Entry fenext = fe->fi_next;
         fe->fi_next = 0;
-        free(fe);
+        dwarf_free(fe);
         fe = fenext;
     }
     context->lc_file_entries = 0;
     if (context->lc_subprogs) {
-        free(context->lc_subprogs);
+        dwarf_free(context->lc_subprogs);
         context->lc_subprogs = 0;
     }
     if (context->lc_include_directories) {
-        free(context->lc_include_directories);
+        dwarf_free(context->lc_include_directories);
         context->lc_include_directories = 0;
     }
     context->lc_magic = 0xdead;
@@ -1870,7 +1870,7 @@ _dwarf_line_context_destructor(void *m)
         return;
     }
     if (line_context->lc_include_directories) {
-        free(line_context->lc_include_directories);
+        dwarf_free(line_context->lc_include_directories);
         line_context->lc_include_directories = 0;
         line_context->lc_include_directories_count = 0;
     }
@@ -1880,7 +1880,7 @@ _dwarf_line_context_destructor(void *m)
             Dwarf_File_Entry t = fe;
             fe = t->fi_next;
             t->fi_next = 0;
-            free(t);
+            dwarf_free(t);
         }
         line_context->lc_file_entries = 0;
         line_context->lc_last_entry   = 0;
@@ -1888,7 +1888,7 @@ _dwarf_line_context_destructor(void *m)
     }
 
     if (line_context->lc_subprogs) {
-        free(line_context->lc_subprogs);
+        dwarf_free(line_context->lc_subprogs);
         line_context->lc_subprogs = 0;
         line_context->lc_subprogs_count = 0;
     }

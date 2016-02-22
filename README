@@ -1,60 +1,15 @@
-BUILDING IN SOURCE TREE
-To just build libdwarf and dwarfdump
-if the source tree is in /a/b/libdwarf-1 
-one might do:
-    cd /a/b/libdwarf-1
-    ./configure
-    make dd
-    #You may need to be root to do the following copy commands
-    cp dwarfdump/dwarfdump      /usr/local/bin
-    cp dwarfdump/dwarfdump.conf /usr/local/lib
-    #The following is optional, not needed to run dwarfdump
-    #when doing the default build.
-    cp libdwarf/libdwarf.a      /usr/local/lib
+This version of libdwarf allocates and frees memory through user-specified functions.
 
-BUILDING OUT OF SOURCE TREE
-Or one could  create a new directory, for example,
-    mkdir /var/tmp/dwarfex
-    cd /var/tmp/dwarfex
-    /a/b/libdwarf-1/configure
-    make dd
-In this case the source directory is not touched and
-all objects and files created are under /var/tmp/dwarfex
+The only difference in the API is that the dwarf_init function takes now three extra parameters:
 
-NOTE: When building out of source tree the source tree
-must be cleaned of any files created by a build
-in the source tree. This is due to the way GNU Make
-VPATH works.
+    int dwarf_init(int fd, 
+                   Dwarf_Unsigned access, 
+                   Dwarf_Handler errhand, 
+                   Dwarf_Ptr errarg, 
+                   Dwarf_Debug * ret_dbg, 
+                   Dwarf_Error * error, 
+                   MallocFunction *malloc_function, 
+                   CallocFunction *calloc_function, 
+                   FreeFunction *free_function);
 
-For a simple build of libdwarf, and dwarfdump
-and the other tools:
-    ./configure
-    make
-    #Optionally: cp libdwarf/libdwarf.a <somewhere>
-
-To build all the tools (including dwarfgen and 
-dwarfexample) use 'make all'. There are known 
-small compile-time issues with building dwarfgen on 
-MaxOSX and most don't need to build dwarfgen.
-    ./configure
-    make all
-
-By default configure compiles and uses libdwarf.a.
-
-With 
-    ./configure --enabled-shared
-both libdwarf.a and libdwarf.so
-are built. The runtimes built will reference libdwarf.so.
-
-With 
-    ./configure --enabled-shared --disable-nonshared
-libdwarf.so is built and used; libdwarf.a is not built.
-
-When ready to create a new source distribution do
-    ./CPTOPUBLIC
-    ./BLDLIBDWARF yyyymmdd
-where that could be
-    ./BLDLIBDWARF 20140131
-as an example.
-
-David Anderson.  Updated December 31, 2015
+For more details, visit: https://blog.debiatan.net/libdwarf_with_custom_allocators.html

@@ -147,7 +147,7 @@ print_alloc_dealloc_detail(unsigned long addr,
 static void *
 newone(void)
 {
-    struct mc_data_s *newd = malloc(sizeof(struct mc_data_s));
+    struct mc_data_s *newd = dwarf_malloc(sizeof(struct mc_data_s));
 
     if (newd == 0) {
         fprintf(stderr, "out of memory , # %ld\n", mc_data_list_size);

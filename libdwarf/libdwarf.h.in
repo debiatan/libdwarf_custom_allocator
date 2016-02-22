@@ -1315,13 +1315,25 @@ enum Dwarf_Form_Class {
 /*===========================================================================*/
 /*  Dwarf consumer interface initialization and termination operations */
 
+#include <stddef.h>
+typedef void * MallocFunction(size_t size);
+typedef void * CallocFunction(size_t nmemb, size_t size);
+typedef void FreeFunction(void *ptr);
+
+extern MallocFunction *dwarf_malloc;
+extern CallocFunction *dwarf_calloc;
+extern FreeFunction *dwarf_free;
+
 /* Initialization based on Unix open fd (using libelf internally). */
 int dwarf_init(int    /*fd*/,
     Dwarf_Unsigned    /*access*/,
     Dwarf_Handler     /*errhand*/,
     Dwarf_Ptr         /*errarg*/,
     Dwarf_Debug*      /*dbg*/,
-    Dwarf_Error*      /*error*/);
+    Dwarf_Error*      /*error*/,
+    MallocFunction *malloc_function, 
+    CallocFunction *calloc_function, 
+    FreeFunction *free_function);
 
 /* Initialization based on libelf/sgi-fastlibelf open pointer. */
 int dwarf_elf_init(dwarf_elf_handle /*elf*/,
