@@ -12,4 +12,4 @@ The only difference in the API is that the dwarf_init function takes now three e
                    CallocFunction *calloc_function, 
                    FreeFunction *free_function);
 
-For more details, visit: http://blog.debiatan.net/libdwarf_with_custom_allocators.html
+For more details, visit: http://blog.debiatan.net/libdwarf_with_custom_memory_allocators.html
